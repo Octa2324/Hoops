@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
 
 
     private bool isMuted = false; 
-    private float lastVolume = 0.2f; 
+    private float lastVolume = 0.01f; 
 
     public float Volume
     {

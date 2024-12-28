@@ -57,6 +57,8 @@ public class LevelManager : MonoBehaviour
 
     private bool hasShot = false;
 
+    private AudioEffects audioEffects;
+
 
     private void Start()
     {   
@@ -77,6 +79,8 @@ public class LevelManager : MonoBehaviour
 
 
         scoring.OnScored += HandleScore;
+
+        audioEffects = FindObjectOfType<AudioEffects>();
     }
 
     private void SetGameBackground(int index)
@@ -204,7 +208,11 @@ public class LevelManager : MonoBehaviour
     public void CollectCoin()
     {
         currentCoins++;
-        AudioManager.Instance.PlayCoinPickupSound();
+
+        if (audioEffects != null)
+        {
+            audioEffects.PickUpCoin();
+        }
     }
 
 
