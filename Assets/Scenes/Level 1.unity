@@ -405,6 +405,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 614b51400445c314191c7bc931abc343, type: 3}
   - {fileID: 21300000, guid: 6e3d50a62c302ad448766d9ee9c04d7c, type: 3}
   stars: {fileID: 2083706873}
+  trajectoryColors:
+  - {r: 0.11764706, g: 0.5372549, b: 0.7411765, a: 0}
+  - {r: 0.7411765, g: 0.11764706, b: 0.15686275, a: 0}
+  - {r: 0.039215688, g: 0.94509804, b: 0.09411765, a: 0}
+  - {r: 0.9411765, g: 0.94509804, b: 0.039215688, a: 0}
 --- !u!1 &183431183
 GameObject:
   m_ObjectHideFlags: 0

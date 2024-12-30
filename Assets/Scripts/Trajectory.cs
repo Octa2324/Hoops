@@ -42,6 +42,17 @@ public class Trajectory : MonoBehaviour
         }
     }
 
+    public void ApplyTrajectoryColor(Color color)
+    {
+        foreach (Transform dot in dotsList)
+        {
+            if (dot.TryGetComponent<SpriteRenderer>(out SpriteRenderer renderer))
+            {
+                renderer.color = color;
+            }
+        }
+    }
+
     public void UpdateDots(Vector3 ballPos, Vector2 forceApplied)
     {
         TimeStamp = dotSpacing;

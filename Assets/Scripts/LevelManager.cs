@@ -6,6 +6,7 @@ using TMPro.Examples;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -59,6 +60,9 @@ public class LevelManager : MonoBehaviour
 
     private AudioEffects audioEffects;
 
+    public List<Color> trajectoryColors; 
+    private Color selectedTrajectoryColor; 
+
 
     private void Start()
     {   
@@ -81,6 +85,25 @@ public class LevelManager : MonoBehaviour
         scoring.OnScored += HandleScore;
 
         audioEffects = FindObjectOfType<AudioEffects>();
+
+        selectedTrajectoryColor = GetSavedTrajectoryColor();
+        SetTrajectoryColor(selectedTrajectoryColor);
+    }
+
+    private Color GetSavedTrajectoryColor()
+    {
+        float r = PlayerPrefs.GetFloat("TrajectoryColorR", 1f); 
+        float g = PlayerPrefs.GetFloat("TrajectoryColorG", 1f);
+        float b = PlayerPrefs.GetFloat("TrajectoryColorB", 1f);
+        return new Color(r, g, b);
+    }
+
+    private void SetTrajectoryColor(Color color)
+    {
+        if (trajectory != null)
+        {
+            trajectory.ApplyTrajectoryColor(color);
+        }
     }
 
     private void SetGameBackground(int index)
@@ -236,6 +259,10 @@ public class LevelManager : MonoBehaviour
         {
             stars.sprite = starImages[currentCoins];
             Debug.Log("Stars Displayed: " + currentCoins);
+
+            int currentLevel = SceneManager.GetActiveScene().buildIndex; 
+            PlayerPrefs.SetInt("Stars_Level_" + currentLevel, currentCoins);
+            PlayerPrefs.Save();
         }
 
     }

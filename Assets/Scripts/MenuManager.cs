@@ -13,6 +13,11 @@ public class MenuManager : MonoBehaviour
     private int selectedBackgroundIndex = 0;
     private int selectedBallIndex = 0;
 
+    public List<Sprite> trajectoryColorImages;
+    public List<Color> trajectoryColors;
+    public Image trajectoryColorPreview; 
+    private int selectedTrajectoryColorIndex = 0;
+
     void Start()
     {
         selectedBackgroundIndex = PlayerPrefs.GetInt("SelectedBackground", 0);
@@ -20,6 +25,10 @@ public class MenuManager : MonoBehaviour
 
         selectedBallIndex = PlayerPrefs.GetInt("SelectedBall", 0);
         SetBall(selectedBallIndex);
+
+        selectedTrajectoryColorIndex = PlayerPrefs.GetInt("SelectedTrajectoryIndex", 0);
+        SetTrajectoryColor(selectedTrajectoryColorIndex);
+
     }
 
     public void NextBackground()
@@ -58,6 +67,32 @@ public class MenuManager : MonoBehaviour
         backgroundImage.sprite = backgroundSprites[index]; 
         PlayerPrefs.SetInt("SelectedBackground", selectedBackgroundIndex); 
         PlayerPrefs.Save();
+    }
+
+    public void NextTrajectoryColor()
+    {
+        selectedTrajectoryColorIndex = (selectedTrajectoryColorIndex + 1) % trajectoryColors.Count;
+        SetTrajectoryColor(selectedTrajectoryColorIndex);
+    }
+
+    public void PreviousTrajectoryColor()
+    {
+        selectedTrajectoryColorIndex = (selectedTrajectoryColorIndex - 1 + trajectoryColors.Count) % trajectoryColors.Count;
+        SetTrajectoryColor(selectedTrajectoryColorIndex);
+    }
+
+    private void SetTrajectoryColor(int index)
+    {
+        trajectoryColorPreview.sprite = trajectoryColorImages[index];
+
+        Color colorToSave = trajectoryColors[index];
+        PlayerPrefs.SetFloat("TrajectoryColorR", colorToSave.r);
+        PlayerPrefs.SetFloat("TrajectoryColorG", colorToSave.g);
+        PlayerPrefs.SetFloat("TrajectoryColorB", colorToSave.b);
+        PlayerPrefs.SetInt("SelectedTrajectoryIndex", index); 
+        PlayerPrefs.Save();
+
+        Debug.Log($"Saved trajectory color: {colorToSave}");
     }
 
     public void PlayGame()
