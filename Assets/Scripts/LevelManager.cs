@@ -255,17 +255,39 @@ public class LevelManager : MonoBehaviour
 
     private void DisplayStars()
     {
-        if(currentCoins <= totalCoins)
+        if (currentCoins <= totalCoins)
         {
             stars.sprite = starImages[currentCoins];
             Debug.Log("Stars Displayed: " + currentCoins);
 
-            int currentLevel = SceneManager.GetActiveScene().buildIndex; 
+            int currentLevel = SceneManager.GetActiveScene().buildIndex;
             PlayerPrefs.SetInt("Stars_Level_" + currentLevel, currentCoins);
             PlayerPrefs.Save();
+
+            UpdateTotalStars();
+        }
+    }
+
+    private void UpdateTotalStars()
+    {
+        int totalStars = 0;
+        int totalLevels = SceneManager.sceneCountInBuildSettings; 
+
+        for (int i = 1; i <= totalLevels; i++)
+        {
+            totalStars += PlayerPrefs.GetInt("Stars_Level_" + i, 0);
         }
 
+        PlayerPrefs.SetInt("TotalStars", totalStars);
+        PlayerPrefs.Save();
+        Debug.Log("Total Stars Updated: " + totalStars);
     }
+
+    public int GetTotalStars()
+    {
+        return PlayerPrefs.GetInt("TotalStars", 0);
+    }
+
 
     private IEnumerator FadeInCanvas(CanvasGroup canvasGroup)
     {

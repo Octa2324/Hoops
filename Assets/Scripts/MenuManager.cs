@@ -18,6 +18,7 @@ public class MenuManager : MonoBehaviour
     public Image trajectoryColorPreview; 
     private int selectedTrajectoryColorIndex = 0;
 
+
     void Start()
     {
         selectedBackgroundIndex = PlayerPrefs.GetInt("SelectedBackground", 0);
@@ -57,16 +58,16 @@ public class MenuManager : MonoBehaviour
 
     private void SetBall(int index)
     {
-        ballImage.sprite = ballSprites[index];
-        PlayerPrefs.SetInt("SelectedBall", selectedBallIndex);
-        PlayerPrefs.Save();
+            ballImage.sprite = ballSprites[index];
+            PlayerPrefs.SetInt("SelectedBall", selectedBallIndex);
+            PlayerPrefs.Save();
     }
 
     private void SetBackground(int index)
     {
-        backgroundImage.sprite = backgroundSprites[index]; 
-        PlayerPrefs.SetInt("SelectedBackground", selectedBackgroundIndex); 
-        PlayerPrefs.Save();
+            backgroundImage.sprite = backgroundSprites[index];
+            PlayerPrefs.SetInt("SelectedBackground", selectedBackgroundIndex);
+            PlayerPrefs.Save();
     }
 
     public void NextTrajectoryColor()
@@ -99,4 +100,6 @@ public class MenuManager : MonoBehaviour
     {
         SceneManager.LoadScene("Level 1");
     }
+
+
 }
