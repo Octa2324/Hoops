@@ -5,7 +5,7 @@ public class AudioEffects : MonoBehaviour
     public static AudioEffects Instance;
 
     private AudioSource src;
-    public AudioClip pickUp;
+    public AudioClip pickUp, boing;
 
     private bool isMuted;
 
@@ -37,6 +37,14 @@ public class AudioEffects : MonoBehaviour
         if (!isMuted && src != null && pickUp != null)
         {
             src.PlayOneShot(pickUp);
+        }
+    }
+
+    public void Boing()
+    {
+        if (!isMuted && src != null && boing != null)
+        {
+            src.PlayOneShot(boing);
         }
     }
 

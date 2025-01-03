@@ -17,6 +17,8 @@ public class LevelSelectorController : MonoBehaviour
     private void Start()
     {
         UpdateLevelStars();
+
+        UpdateLevelAccessibility();
     }
 
     private void UpdateLevelStars()
@@ -27,6 +29,24 @@ public class LevelSelectorController : MonoBehaviour
             if (levelButtons[i].starImage != null && stars < levelButtons[i].starSprites.Count)
             {
                 levelButtons[i].starImage.sprite = levelButtons[i].starSprites[stars];
+            }
+        }
+    }
+
+
+    private void UpdateLevelAccessibility()
+    {
+        for (int i = 0; i < levelButtons.Count; i++)
+        {
+            int starsRequired = 3; 
+            if (i == 0)
+            {
+                levelButtons[i].button.interactable = true;
+            }
+            else
+            {
+                int previousLevelStars = PlayerPrefs.GetInt("Stars_Level_" + i, 0);
+                levelButtons[i].button.interactable = previousLevelStars >= starsRequired;
             }
         }
     }

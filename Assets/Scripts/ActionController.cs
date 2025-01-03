@@ -24,7 +24,26 @@ public class ActionController : MonoBehaviour
 
         if (currentSceneIndex + 1 < totalScenes)
         {
-            SceneManager.LoadScene(currentSceneIndex + 1);
+            int nextLevelIndex = currentSceneIndex + 1;
+            int isUnlocked = PlayerPrefs.GetInt("LevelUnlocked_" + nextLevelIndex, 0);
+            if (isUnlocked == 1)
+            {
+                int currentLevelStars = PlayerPrefs.GetInt("Stars_Level_" + currentSceneIndex, 0);
+                if (currentLevelStars >= 3)
+                {
+                    SceneManager.LoadScene(nextLevelIndex);
+                }
+                else
+                {
+                    Debug.Log("Not enough stars to proceed. Redirecting to menu.");
+                    Exit(); 
+                }
+            }
+            else
+            {
+                Debug.Log("Next level is locked. Complete previous levels to unlock it.");
+                Exit(); 
+            }
         }
         else
         {
@@ -32,4 +51,5 @@ public class ActionController : MonoBehaviour
             SceneManager.LoadScene(0); 
         }
     }
+
 }

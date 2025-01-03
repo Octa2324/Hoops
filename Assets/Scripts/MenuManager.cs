@@ -32,6 +32,14 @@ public class MenuManager : MonoBehaviour
 
     }
 
+    public void DeleteData()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+
+        Debug.Log("All PlayerPrefs data deleted");
+    }
+
     public void NextBackground()
     {
         selectedBackgroundIndex = (selectedBackgroundIndex + 1) % backgroundSprites.Count;

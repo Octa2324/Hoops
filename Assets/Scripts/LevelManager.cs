@@ -40,8 +40,10 @@ public class LevelManager : MonoBehaviour
     public GameObject pauseScreen;
     public GameObject nextLevelCanvas; 
     public GameObject gameOverCanvas;
+    public GameObject finalCanvas;
     private CanvasGroup nextLevelCanvasGroup;
     private CanvasGroup gameOverCanvasGroup;
+    private CanvasGroup finalCanvasGroup;
 
     public GameObject pauseCanvas;
 
@@ -74,6 +76,8 @@ public class LevelManager : MonoBehaviour
             nextLevelCanvasGroup = nextLevelCanvas.GetComponent<CanvasGroup>();
         if (gameOverCanvas != null)
             gameOverCanvasGroup = gameOverCanvas.GetComponent<CanvasGroup>();
+        if (finalCanvas != null)
+            finalCanvasGroup = finalCanvas.GetComponent<CanvasGroup>();
 
         int selectedBackgroundIndex = PlayerPrefs.GetInt("SelectedBackground", 0);
         SetGameBackground(selectedBackgroundIndex);
@@ -92,9 +96,9 @@ public class LevelManager : MonoBehaviour
 
     private Color GetSavedTrajectoryColor()
     {
-        float r = PlayerPrefs.GetFloat("TrajectoryColorR", 1f); 
-        float g = PlayerPrefs.GetFloat("TrajectoryColorG", 1f);
-        float b = PlayerPrefs.GetFloat("TrajectoryColorB", 1f);
+        float r = PlayerPrefs.GetFloat("TrajectoryColorR", 0.118f); 
+        float g = PlayerPrefs.GetFloat("TrajectoryColorG", 0.537f);
+        float b = PlayerPrefs.GetFloat("TrajectoryColorB", 0.741f);
         return new Color(r, g, b);
     }
 
@@ -228,6 +232,18 @@ public class LevelManager : MonoBehaviour
         DisplayStars();
     }
 
+    private void ShowFinalCanvas()
+    {
+        isInputLocked = true;
+
+        if(pauseCanvas != null)
+            pauseCanvas.SetActive(false);
+
+        finalCanvas.SetActive(true);
+        StartCoroutine(FadeInCanvas(finalCanvasGroup));
+        DisplayStars();
+    }
+
     public void CollectCoin()
     {
         currentCoins++;
@@ -242,14 +258,52 @@ public class LevelManager : MonoBehaviour
     private void HandleScore()
     {
         hasScored = true;
-        StartCoroutine(DelayNextLevel());
+
+        UnlockNextLevel();
+
+        if(SceneManager.GetActiveScene().buildIndex == 9)
+        {
+            StartCoroutine(DelayFinalLevel());
+        }
+        else
+        {
+            StartCoroutine(DelayNextLevel());
+        }
     }
+
+    private void UnlockNextLevel()
+    {
+        if (currentCoins == totalCoins) 
+        {
+            int currentLevel = SceneManager.GetActiveScene().buildIndex;
+            int totalLevels = SceneManager.sceneCountInBuildSettings;
+
+            if (currentLevel + 1 < totalLevels) 
+            {
+                PlayerPrefs.SetInt("LevelUnlocked_" + (currentLevel + 1), 1); 
+                PlayerPrefs.Save();
+                Debug.Log("Next level unlocked: Level " + (currentLevel + 1));
+            }
+        }
+        else
+        {
+            Debug.Log("Next level not unlocked. Earn 3 stars to proceed.");
+        }
+    }
+
 
     private IEnumerator DelayNextLevel()
     {
         yield return new WaitForSeconds(1f);
 
         ShowNextLevelCanvas();
+    }
+
+    private IEnumerator DelayFinalLevel()
+    {
+        yield return new WaitForSeconds(1f);
+
+        ShowFinalCanvas();
     }
 
 
@@ -261,8 +315,19 @@ public class LevelManager : MonoBehaviour
             Debug.Log("Stars Displayed: " + currentCoins);
 
             int currentLevel = SceneManager.GetActiveScene().buildIndex;
-            PlayerPrefs.SetInt("Stars_Level_" + currentLevel, currentCoins);
-            PlayerPrefs.Save();
+            int previousMaxStars = PlayerPrefs.GetInt("Stars_Level_" + currentLevel, 0);
+
+            if (currentCoins > previousMaxStars)
+            {
+                PlayerPrefs.SetInt("Stars_Level_" + currentLevel, currentCoins);
+                PlayerPrefs.Save();
+                Debug.Log($"New max stars for Level {currentLevel}: {currentCoins}");
+            }
+            else
+            {
+                Debug.Log($"Stars for Level {currentLevel} remain at max: {previousMaxStars}");
+            }
+
 
             UpdateTotalStars();
         }
