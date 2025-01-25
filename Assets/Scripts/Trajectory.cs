@@ -8,8 +8,8 @@ public class Trajectory : MonoBehaviour
     [SerializeField] GameObject DotsParent;
     [SerializeField] GameObject DotsPrefab;
     [SerializeField] float dotSpacing;
-    [SerializeField] [Range(0.01f, 0.5f)] float dotMinScale;
-    [SerializeField] [Range(0.5f, 1f)] float dotMaxScale;
+    [SerializeField] [Range(0.5f, 1f)] float dotMinScale;
+    [SerializeField] [Range(1f, 2f)] float dotMaxScale;
 
     Transform[] dotsList;
     Vector2 pos;

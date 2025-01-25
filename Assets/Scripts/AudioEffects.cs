@@ -5,7 +5,7 @@ public class AudioEffects : MonoBehaviour
     public static AudioEffects Instance;
 
     private AudioSource src;
-    public AudioClip pickUp, boing;
+    public AudioClip pickUp, boing, select, ballHit;
 
     private bool isMuted;
 
@@ -48,6 +48,22 @@ public class AudioEffects : MonoBehaviour
         }
     }
 
+    public void Select()
+    {
+        if (!isMuted && src != null && select != null)
+        {
+            src.PlayOneShot(select);
+        }
+    }
+
+    public void BallHit()
+    {
+        if (!isMuted && src != null && ballHit != null)
+        {
+            src.PlayOneShot(ballHit);
+        }
+    }
+
     public void ToggleMute()
     {
         isMuted = !isMuted;
@@ -70,12 +86,11 @@ public class AudioEffects : MonoBehaviour
 
     private void SaveMuteState()
     {
-        PlayerPrefs.SetInt("MuteState", isMuted ? 1 : 0);
-        PlayerPrefs.Save();
+        MusicData.Instance.SoundEffectsMute = isMuted ? 1 : 0;
     }
 
     private void LoadMuteState()
     {
-        isMuted = PlayerPrefs.GetInt("MuteState", 0) == 1;
+        isMuted = MusicData.Instance.SoundEffectsMute == 1;
     }
 }

@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Reflection;
 
 public class LevelManager : MonoBehaviour
 {
@@ -63,7 +64,9 @@ public class LevelManager : MonoBehaviour
     private AudioEffects audioEffects;
 
     public List<Color> trajectoryColors; 
-    private Color selectedTrajectoryColor; 
+    private Color selectedTrajectoryColor;
+
+    private int totalLevels = 9;
 
 
     private void Start()
@@ -79,10 +82,10 @@ public class LevelManager : MonoBehaviour
         if (finalCanvas != null)
             finalCanvasGroup = finalCanvas.GetComponent<CanvasGroup>();
 
-        int selectedBackgroundIndex = PlayerPrefs.GetInt("SelectedBackground", 0);
+        int selectedBackgroundIndex = RuntimeDataManager.Instance.SelectedBackground;
         SetGameBackground(selectedBackgroundIndex);
 
-        int selectedBallIndex = PlayerPrefs.GetInt("SelectedBall", 0);
+        int selectedBallIndex = RuntimeDataManager.Instance.SelectedBall;
         SetGameBall(selectedBallIndex);
 
 
@@ -280,8 +283,7 @@ public class LevelManager : MonoBehaviour
 
             if (currentLevel + 1 < totalLevels) 
             {
-                PlayerPrefs.SetInt("LevelUnlocked_" + (currentLevel + 1), 1); 
-                PlayerPrefs.Save();
+                RuntimeDataManager.Instance.UnlockLevel(currentLevel + 1);
                 Debug.Log("Next level unlocked: Level " + (currentLevel + 1));
             }
         }
@@ -315,12 +317,12 @@ public class LevelManager : MonoBehaviour
             Debug.Log("Stars Displayed: " + currentCoins);
 
             int currentLevel = SceneManager.GetActiveScene().buildIndex;
-            int previousMaxStars = PlayerPrefs.GetInt("Stars_Level_" + currentLevel, 0);
+            int previousMaxStars = RuntimeDataManager.Instance.GetStarsForLevel(currentLevel);
 
             if (currentCoins > previousMaxStars)
             {
-                PlayerPrefs.SetInt("Stars_Level_" + currentLevel, currentCoins);
-                PlayerPrefs.Save();
+                RuntimeDataManager.Instance.SetStarsForLevel(currentLevel, currentCoins);
+
                 Debug.Log($"New max stars for Level {currentLevel}: {currentCoins}");
             }
             else
@@ -329,30 +331,8 @@ public class LevelManager : MonoBehaviour
             }
 
 
-            UpdateTotalStars();
         }
     }
-
-    private void UpdateTotalStars()
-    {
-        int totalStars = 0;
-        int totalLevels = SceneManager.sceneCountInBuildSettings; 
-
-        for (int i = 1; i <= totalLevels; i++)
-        {
-            totalStars += PlayerPrefs.GetInt("Stars_Level_" + i, 0);
-        }
-
-        PlayerPrefs.SetInt("TotalStars", totalStars);
-        PlayerPrefs.Save();
-        Debug.Log("Total Stars Updated: " + totalStars);
-    }
-
-    public int GetTotalStars()
-    {
-        return PlayerPrefs.GetInt("TotalStars", 0);
-    }
-
 
     private IEnumerator FadeInCanvas(CanvasGroup canvasGroup)
     {

@@ -6,29 +6,10 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
-    private AudioSource audioSource;
+    private AudioSource src;
+    public AudioClip music;
 
-    public AudioClip coinPickup;
-
-
-    private bool isMuted = false; 
-    private float lastVolume = 0.01f; 
-
-    public float Volume
-    {
-        get => isMuted ? 0f : lastVolume;  
-        set
-        {
-            if (audioSource != null)
-            {
-                lastVolume = Mathf.Clamp01(value);  
-                if (!isMuted)  
-                {
-                    audioSource.volume = lastVolume;
-                }
-            }
-        }
-    }
+    private bool isMuted;
 
     private void Awake()
     {
@@ -43,33 +24,32 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-    }
-
-    private void Start()
-    {
-        if (audioSource == null)
+        src = GetComponent<AudioSource>();
+        if (src == null)
         {
-            audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
-            {
-                audioSource = gameObject.AddComponent<AudioSource>();
-            }
+            src = gameObject.AddComponent<AudioSource>();
         }
 
-       
+        src.clip = music;
+        src.loop = true;
+        src.playOnAwake = false;
 
-        audioSource.loop = true;
+        LoadMuteState();
+        UpdateMuteState();
 
-        if (audioSource.clip != null && !audioSource.isPlaying)
+        if (music != null)
         {
-            audioSource.Play();
+            src.Play();
         }
     }
+
+
 
     public void ToggleMute()
     {
         isMuted = !isMuted;
-        audioSource.volume = isMuted ? 0f : lastVolume;
+        UpdateMuteState();
+        SaveMuteState();
     }
 
     public bool IsMuted()
@@ -77,12 +57,22 @@ public class AudioManager : MonoBehaviour
         return isMuted;
     }
 
-    public void PlayCoinPickupSound()
+    private void UpdateMuteState()
     {
-        if (coinPickup != null)
+        if (src != null)
         {
-            audioSource.PlayOneShot(coinPickup);
+            src.mute = isMuted;
         }
+    }
+
+    private void SaveMuteState()
+    {
+        MusicData.Instance.MusicMute = isMuted ? 1 : 0;
+    }
+
+    private void LoadMuteState()
+    {
+        isMuted = MusicData.Instance.MusicMute == 1;
     }
 
 }

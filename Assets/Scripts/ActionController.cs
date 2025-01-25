@@ -5,15 +5,23 @@ using UnityEngine.SceneManagement;
 
 public class ActionController : MonoBehaviour
 {
+    private AudioEffects audioEffects;
+
+    private void Start()
+    {
+        audioEffects = FindObjectOfType<AudioEffects>();
+    }
+
     public void RestartLevel()
     {
-        
+        audioEffects.Select();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1f; 
     }
 
     public void Exit()
     {
+        audioEffects.Select();
         SceneManager.LoadScene("Menu");
     }
 
@@ -22,13 +30,15 @@ public class ActionController : MonoBehaviour
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int totalScenes = SceneManager.sceneCountInBuildSettings;
 
+        audioEffects.Select();
+
         if (currentSceneIndex + 1 < totalScenes)
         {
             int nextLevelIndex = currentSceneIndex + 1;
-            int isUnlocked = PlayerPrefs.GetInt("LevelUnlocked_" + nextLevelIndex, 0);
-            if (isUnlocked == 1)
+
+            if (RuntimeDataManager.Instance.IsLevelUnlocked(nextLevelIndex))
             {
-                int currentLevelStars = PlayerPrefs.GetInt("Stars_Level_" + currentSceneIndex, 0);
+                int currentLevelStars = RuntimeDataManager.Instance.GetStarsForLevel(currentSceneIndex);
                 if (currentLevelStars >= 3)
                 {
                     SceneManager.LoadScene(nextLevelIndex);
@@ -36,20 +46,21 @@ public class ActionController : MonoBehaviour
                 else
                 {
                     Debug.Log("Not enough stars to proceed. Redirecting to menu.");
-                    Exit(); 
+                    Exit();
                 }
             }
             else
             {
                 Debug.Log("Next level is locked. Complete previous levels to unlock it.");
-                Exit(); 
+                Exit();
             }
         }
         else
         {
             Debug.Log("No next level found. Returning to the first level.");
-            SceneManager.LoadScene(0); 
+            SceneManager.LoadScene(0);
         }
     }
+
 
 }

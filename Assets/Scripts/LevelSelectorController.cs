@@ -25,7 +25,7 @@ public class LevelSelectorController : MonoBehaviour
     {
         for (int i = 0; i < levelButtons.Count; i++)
         {
-            int stars = PlayerPrefs.GetInt("Stars_Level_" + (i + 1), 0); 
+            int stars = RuntimeDataManager.Instance.GetStarsForLevel(i + 1);
             if (levelButtons[i].starImage != null && stars < levelButtons[i].starSprites.Count)
             {
                 levelButtons[i].starImage.sprite = levelButtons[i].starSprites[stars];
@@ -45,7 +45,7 @@ public class LevelSelectorController : MonoBehaviour
             }
             else
             {
-                int previousLevelStars = PlayerPrefs.GetInt("Stars_Level_" + i, 0);
+                int previousLevelStars = RuntimeDataManager.Instance.GetStarsForLevel(i);
                 levelButtons[i].button.interactable = previousLevelStars >= starsRequired;
             }
         }
